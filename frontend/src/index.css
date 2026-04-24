@@ -17,3 +17,85 @@
     @apply bg-background text-foreground;
   }
 }
+/* Smooth transition for all themed properties */
+.theme-transitioning * {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease !important;
+}
+
+/* ========== LIGHT THEME ========== */
+.light {
+  --background: 0 0% 100%;          /* pure white card surfaces */
+  --foreground: 222 15% 20%;        /* dark navy text */
+
+  /* Card & popover */
+  --card: 0 0% 100%;
+  --card-foreground: 222 15% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 15% 20%;
+
+  /* Primary – calm blue */
+  --primary: 220 70% 50%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary – soft slate */
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 220 10% 30%;
+
+  /* Muted – warm gray */
+  --muted: 210 20% 98%;
+  --muted-foreground: 220 8% 46%;
+
+  /* Accent – subtle purple */
+  --accent: 250 70% 96%;
+  --accent-foreground: 250 40% 40%;
+
+  /* Destructive */
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Borders & inputs */
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 220 70% 50%;
+
+  /* Radius */
+  --radius: 0.75rem;
+}
+
+/* ========== DARK THEME ========== */
+.dark {
+  --background: 220 20% 6%;          /* deep slate background */
+  --foreground: 210 20% 88%;        /* soft off‑white text */
+
+  --card: 220 20% 10%;
+  --card-foreground: 210 20% 88%;
+  --popover: 220 20% 10%;
+  --popover-foreground: 210 20% 88%;
+
+  /* Primary – vibrant blue */
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary – dark slate */
+  --secondary: 220 15% 16%;
+  --secondary-foreground: 210 20% 88%;
+
+  /* Muted – subtle gray-blue */
+  --muted: 220 15% 16%;
+  --muted-foreground: 220 10% 60%;
+
+  /* Accent – soft violet */
+  --accent: 250 30% 20%;
+  --accent-foreground: 250 60% 80%;
+
+  /* Destructive */
+  --destructive: 0 62% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Borders & inputs */
+  --border: 220 13% 18%;
+  --input: 220 13% 18%;
+  --ring: 217 91% 60%;
+
+  --radius: 0.75rem;
+}

@@ -9,6 +9,7 @@ import StudentDashboard from './pages/student/StudentDashboard';
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import HODDashboard from './pages/hod/HODDashboard';
 import Login from './pages/auth/Login';
+import { ThemeProvider } from './components/ThemeProvider';
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 
 export default function App() {
   return (
+    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <Toaster 
         position="top-right" 
@@ -54,5 +56,6 @@ export default function App() {
         </Routes>
       </Router>
     </QueryClientProvider>
+    </ThemeProvider>
   );
 }

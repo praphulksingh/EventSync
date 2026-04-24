@@ -4,6 +4,8 @@ const Event = require('../models/Event');
 const Attendance = require('../models/Attendance');
 const User = require('../models/User'); 
 const mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
+
 
 // =======================================================
 //                    HOD FUNCTIONS
@@ -623,5 +625,99 @@ exports.getHODEventDetails = async (req, res) => {
     } catch (error) {
         console.error('FETCH HOD EVENT DETAILS ERROR:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+
+
+
+// HOD clicks "Generate" - We just mark the event as ready for download
+exports.generateCertificates = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.eventId);
+        if (!event) return res.status(404).json({ message: 'Event not found' });
+
+        event.certificatesGenerated = true;
+        await event.save();
+
+        res.status(200).json({ success: true, message: 'Certificates are now available for students to download!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+// Student clicks "Download" - We dynamically create the PDF
+exports.downloadCertificate = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        
+        // Allow token from query string since window.open() doesn't send Bearer headers
+        const token = req.query.token; 
+        if(!token) return res.status(401).json({message: "Not authorized to download"});
+        
+        // Note: Make sure to decode the user from the token here, or rely on your 'protect' middleware
+        // assuming req.user is set.
+        const studentId = req.user._id; 
+
+        // 1. Verify student attended
+        const attendance = await Attendance.findOne({ event: eventId, student: studentId });
+        if (!attendance || !attendance.isPresent) {
+            return res.status(400).json({ message: 'You must be marked present to receive a certificate.' });
+        }
+
+        const event = await Event.findById(eventId);
+        
+        // 2. Initialize PDF Document
+        const doc = new PDFDocument({
+            layout: 'landscape',
+            size: 'A4',
+        });
+
+        // 3. Pipe PDF directly to browser response
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=Certificate_${event.name.replace(/\s+/g, '_')}.pdf`);
+        doc.pipe(res);
+
+        // 4. Draw the Dynamic Certificate Design
+        // Background border
+        doc.rect(20, 20, doc.page.width - 40, doc.page.height - 40).stroke('#4a69bd');
+        doc.rect(25, 25, doc.page.width - 50, doc.page.height - 50).stroke('#4a69bd');
+
+        // Header
+        doc.fontSize(40).fillColor('#2c3e50').text('Certificate of Participation', { align: 'center' });
+        doc.moveDown(1);
+        
+        // Body
+        doc.fontSize(20).fillColor('#34495e').text('This is to certify that', { align: 'center' });
+        doc.moveDown(0.5);
+        
+        // Dynamic Student Name
+        doc.fontSize(30).fillColor('#8e44ad').text(req.user.name.toUpperCase(), { align: 'center', underline: true });
+        doc.moveDown(0.5);
+        
+        // Dynamic Event Details
+        doc.fontSize(20).fillColor('#34495e').text('has successfully participated in the event', { align: 'center' });
+        doc.moveDown(0.5);
+        doc.fontSize(25).fillColor('#e67e22').text(event.name, { align: 'center' });
+        doc.moveDown(1);
+        
+        // Date
+        const formattedDate = new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.fontSize(16).fillColor('#7f8c8d').text(`Held on: ${formattedDate}`, { align: 'center' });
+
+        // Signatures (Mockup)
+        doc.moveDown(3);
+        doc.fontSize(14).fillColor('#2c3e50');
+        doc.text('_______________________', 150, doc.y, { continue: true });
+        doc.text('_______________________', 450, doc.y);
+        doc.text('Head of Department', 170, doc.y + 20, { continue: true });
+        doc.text('Event Coordinator', 480, doc.y + 20);
+
+        // Finalize PDF file
+        doc.end();
+
+    } catch (error) {
+        console.error('PDF Error:', error);
+        res.status(500).json({ message: 'Error generating certificate' });
     }
 };

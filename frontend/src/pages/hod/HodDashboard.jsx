@@ -195,7 +195,7 @@ export default function HODDashboard() {
         </div>
       )}
 
-      {activeSection === 'manage-users' && (
+      {activeSection === 'create-user' && (
         <div className={`max-w-2xl mx-auto ${sectionVariants}`}>
           <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-md p-8 rounded-3xl">
             <h3 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
