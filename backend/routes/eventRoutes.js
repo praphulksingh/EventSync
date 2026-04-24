@@ -21,7 +21,9 @@ const {
     updateAttendance,
     getEventDetails,
     deleteEvent,
-    updateEvent, // Used for the Edit button action
+    updateEvent,
+    getEventFaceData,
+    // Used for the Edit button action
     
     // Student Functions (NEW IMPORTS)
     getStudentDashboardMetrics,
@@ -31,7 +33,8 @@ const {
     cancelRegistration,
     getStudentAttendanceHistory,
     getStudentCertificates,
-    downloadCertificate
+    downloadCertificate,
+    updateFaceDescriptor
 } = require('../controllers/eventController');
 
 // All event routes require login/protection
@@ -60,14 +63,14 @@ router.get('/faculty/events/:eventId', authorize('faculty'), getEventDetails);
 router.delete('/faculty/events/:eventId', authorize('faculty'), deleteEvent); 
 router.get('/faculty/registrations/:eventId', authorize('faculty'), getEventRegistrations);
 router.put('/faculty/attendance/:eventId/:studentId', authorize('faculty'), updateAttendance);
-
+router.get('/faculty/faces/:eventId', authorize('faculty'), getEventFaceData);
 
 // =======================================================
 // STUDENT ROUTES (CRITICAL ADDITION) 🚀
 // =======================================================
 router.get('/student/metrics', authorize('student'), getStudentDashboardMetrics);
 router.get('/student/all', authorize('student'), getAllApprovedEvents); // View Events
-
+router.put('/student/update-face', authorize('student'), updateFaceDescriptor);
 router.post('/student/register/:eventId', authorize('student'), registerForEvent); // Register button
 router.get('/student/registered', authorize('student'), getStudentRegisteredEvents); // My Registered Events list
 router.delete('/student/registered/:attendanceId', authorize('student'), cancelRegistration); // Cancel button

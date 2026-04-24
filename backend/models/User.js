@@ -30,8 +30,9 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     faceDescriptor: {
-    type: [Number], // Storing the array of numbers (128 floats)
-    default: null
+    type: [Number], // It will store an array of 128 numbers
+    default: [],
+    select: true 
     },
     // --- Role-Specific Fields ---
     department: {

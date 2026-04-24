@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 
 
+
 // =======================================================
 //                    HOD FUNCTIONS
 // =======================================================
@@ -719,5 +720,44 @@ exports.downloadCertificate = async (req, res) => {
     } catch (error) {
         console.error('PDF Error:', error);
         res.status(500).json({ message: 'Error generating certificate' });
+    }
+};
+
+exports.updateFaceDescriptor = async (req, res) => {
+    try {
+        const { faceDescriptor } = req.body;
+        
+        // Ensure the data is valid
+        if (!faceDescriptor || faceDescriptor.length !== 128) {
+            return res.status(400).json({ message: 'Invalid face data provided.' });
+        }
+
+        // Find the logged-in student and update their profile
+        const user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.faceDescriptor = faceDescriptor;
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Facial data registered securely!' });
+    } catch (error) {
+        console.error("Face update error:", error);
+        res.status(500).json({ message: 'Server error while saving face data', error: error.message });
+    }
+};
+
+exports.getEventFaceData = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        // Find all attendance records for this event and populate the student's face data
+        const registrations = await Attendance.find({ event: eventId })
+            .populate('student', 'name userId faceDescriptor');
+            
+        // Filter out students who haven't registered their face yet
+        const validFaces = registrations.filter(reg => reg.student.faceDescriptor && reg.student.faceDescriptor.length === 128);
+        
+        res.status(200).json({ success: true, data: validFaces });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching face data' });
     }
 };

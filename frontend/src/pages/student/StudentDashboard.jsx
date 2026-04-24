@@ -18,6 +18,7 @@ import api from '../../api/api';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import FaceRegistration from '../../components/FaceRegistration';
 import { useAuthStore } from '../../store/authStore';
 
 // ==================== REUSABLE STAT CARD (Student theme) ====================
@@ -349,7 +350,12 @@ export default function StudentDashboard() {
           </Card>
         </div>
       )}
-
+      {/* ============ FACE REGISTRATION ============ */}
+      {activeSection === 'register-face' && (
+              <div className="animate-fadeIn">
+                <FaceRegistration />
+              </div>
+      )}
       {/* ============ CHANGE PASSWORD ============ */}
       {activeSection === 'change-password' && (
         <div className={`max-w-md mx-auto ${sectionVariants}`}>

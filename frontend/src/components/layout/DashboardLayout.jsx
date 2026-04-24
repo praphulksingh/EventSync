@@ -17,7 +17,8 @@ import {
   UserPlus, 
   FileText,
   Sun,
-  Moon
+  Moon,
+  ScanFace
 } from 'lucide-react';
 
 export default function DashboardLayout({ children, role, title }) {
@@ -58,12 +59,13 @@ export default function DashboardLayout({ children, role, title }) {
 
   // Fixed IDs so they match your dashboard components exactly
   const navItems = {
-    student: [
+   student: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { id: 'events', label: 'View Events', icon: Calendar },
       { id: 'registered-events', label: 'My Registered Events', icon: CalendarCheck },
       { id: 'attendance', label: 'My Attendance', icon: ClipboardCheck },
       { id: 'certificates', label: 'Download Certificates', icon: Award },
+      { id: 'register-face', label: 'Face Registration', icon: ScanFace }, // ADD THIS LINE
     ],
     faculty: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
